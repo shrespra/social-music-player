@@ -1,8 +1,8 @@
 *.class
-bin/
-test/bin/
-SocialMusicPlayer/bin/
-SocialMusicPlayerServer/bin/
+bin/*
+test/bin/*
+SocialMusicPlayer/bin/*
+SocialMusicPlayerServer/bin/*
 
 # OS generated files #
 ######################
