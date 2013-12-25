@@ -1,1 +1,0 @@
-Social Music Player
