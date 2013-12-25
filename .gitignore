@@ -1,5 +1,5 @@
 *.class
-bin
+bin/
 
 # OS generated files #
 ######################
