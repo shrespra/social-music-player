@@ -1,0 +1,21 @@
+package com.player;
+
+import java.io.IOException;
+import javax.servlet.http.*;
+
+/*@SuppressWarnings("serial")
+public class EMF extends HttpServlet {
+	public void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException {
+		resp.setContentType("text/plain");
+		resp.getWriter().println("Hello, world");
+	}
+}
+*/
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
+public final class EMF {
+ private static final EntityManagerFactory emfInstance = Persistence
+ 	 .createEntityManagerFactory("transactions-optional");
+}

@@ -1,0 +1,83 @@
+package com.player;
+
+import java.io.IOException;
+/*import javax.servlet.http.*;
+
+@SuppressWarnings("serial")
+public class MusicCircleController extends HttpServlet {
+	public void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException {
+		resp.setContentType("text/plain");
+		resp.getWriter().println("Hello, world");
+	}
+}
+*/
+import java.io.InputStream;
+import java.util.List;
+import java.util.Scanner;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.gson.Gson;
+
+public class MusicCircleController extends HttpServlet {
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		
+		
+		EntityManager mgr = getEntityManager();
+		
+		Query query = mgr.createQuery("select from " + MusicCircle.class.getName());
+		List<MusicCircle> musicCircles = query.getResultList();
+		
+		//convert list of music circles to string
+		String response = toJson(musicCircles);
+		
+		resp.getWriter().write(response);
+	
+	}
+	
+	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		InputStream in = req.getInputStream();
+		String st = inputStreamToString(in);
+		//System.out.println(st);
+		MusicCircle circle1 = fromJson(st);
+		
+		//System.out.println(circle1);
+		//System.out.println(circle1.getMembers());
+		
+		EntityManager mgr = getEntityManager();
+
+		try {
+			//write to database using entity manager
+			mgr.persist(circle1); // save
+
+		} finally {
+			mgr.close();
+		}
+	}
+	
+	private static EntityManager getEntityManager() {
+		return EMF.get().createEntityManager();
+	}
+
+	private MusicCircle fromJson(String jsonString) {
+		Gson gson = new Gson();
+		return gson.fromJson(jsonString, MusicCircle.class);
+	}
+
+	private String toJson(Object object) {
+		Gson gson = new Gson();
+		return gson.toJson(object);
+	}
+
+	private String inputStreamToString(InputStream in) {
+		Scanner sc = new Scanner(in);
+		sc.useDelimiter("\\Z+");
+		return sc.next();
+	}
+	
+}

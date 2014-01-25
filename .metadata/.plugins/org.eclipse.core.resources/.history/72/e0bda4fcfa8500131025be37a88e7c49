@@ -1,0 +1,43 @@
+package com.player;
+
+import java.io.IOException;
+/*import javax.servlet.http.*;
+
+@SuppressWarnings("serial")
+public class MusicCircleController extends HttpServlet {
+	public void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException {
+		resp.setContentType("text/plain");
+		resp.getWriter().println("Hello, world");
+	}
+}
+*/
+import java.io.InputStream;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class MusicCircleController extends HttpServlet {
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		
+		EntityManager mgr = getEntityManager();
+		
+		Query query = mgr.createQuery("select from " + MusicCircle.class.getName());
+		List<MusicCircle> musicCircles = query.getResultList();
+		
+		//convert list of music circles to string
+		String response = toJson(musicCircles);
+		
+		resp.getWriter().write(response);
+	
+	}
+	
+	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		InputStream in = req.getInputStream();
+	}
+	
+}
