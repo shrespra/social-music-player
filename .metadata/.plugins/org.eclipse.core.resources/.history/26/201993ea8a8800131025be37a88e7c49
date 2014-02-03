@@ -1,0 +1,96 @@
+package com.player;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Scanner;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.gson.Gson;
+
+@SuppressWarnings("serial")
+public class SongController extends HttpServlet {
+	
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+	System.out.println("User sent Get request");
+	
+	EntityManager mgr = getEntityManager();
+	
+	Query query = mgr.createQuery("select from" + Song.class.getName());
+	List<Song> songs = query.getResultList();
+	
+	//convert list of songs to string
+	String response = toJson(songs);
+	
+	// send a message to client
+	resp.getWriter().write(response);
+	}
+	
+public static void main (String[] args) {
+	System.out.println(Song.class.getName());
+	}
+
+public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		System.out.println("User sent POST request");
+		//Get input stream
+		InputStream inputStream = req.getInputStream();
+	
+		String request = inputStreamToString(inputStream);
+	
+		Song song = fromJson(request);
+	
+		EntityManager mgr = getEntityManager();
+	
+		try {
+			mgr.persist(song);
+		} finally {
+			mgr.close();
+		}
+	
+	}
+
+public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+	
+	String path = req.getPathInfo();
+	String id = path.replaceAll("/","");
+	
+	EntityManager mgr = getEntityManager();
+	Key key = KeyFactory.createKey(Song.class.getSimpleName(), Long.parseLong(id));
+	
+	Song song = mgr.find(Song.class, key);
+	//System.out.println(song)
+	
+	try {
+		mgr.remove(song);;
+	}	finally {
+		mgr.close();
+	}
+}
+
+	private static EntityManager getEntityManager() {
+		return EMF.get().createEntityManager();
+	}
+	
+	private Song fromJson(String jsonString) {
+		Gson gson = new Gson();
+		return gson.fromJson(jsonString, Song.class);
+	}
+	
+	private String toJson(Object object) {
+		Gson gson = new Gson();
+		return gson.toJson(object);
+	}
+	
+	private String inputStreamToString(InputStream inputStream) {
+		Scanner sc = new Scanner(inputStream);
+		sc.useDelimiter("\\Z+");
+		return sc.next();
+	}
+}

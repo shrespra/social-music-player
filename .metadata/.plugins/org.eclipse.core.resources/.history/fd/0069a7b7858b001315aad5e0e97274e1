@@ -1,0 +1,99 @@
+package com.player;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Scanner;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.gson.Gson;
+
+@SuppressWarnings("serial")
+public class InvitationController extends HttpServlet {
+	
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+	System.out.println("User sent Get request");
+	
+	EntityManager mgr = getEntityManager();
+	
+	Query query = mgr.createQuery("select from " + Invitation.class.getName());
+	List<Invitation> invitation = query.getResultList();
+	
+	//convert list of invitation to string
+	String response = toJson(invitation);
+	
+	// send a message to client
+	resp.getWriter().write(response);
+	}
+	
+	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		System.out.println("user sent Post request");
+		
+		InputStream inputStream = req.getInputStream();
+		
+		String request = inputStreamToString(inputStream);
+		
+		Invitation invitation = fromJson(request);
+		
+		invitation.setToken(doubleToString(Math.random()));
+		
+		EntityManager mgr = getEntityManager();
+		
+		try {
+			mgr.persist(invitation);
+		} finally {
+			mgr.close();
+		}
+		
+	}
+	
+	public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		
+		String path = req.getPathInfo();
+		String id = path.replaceAll("/","");
+		
+		EntityManager mgr = getEntityManager();
+		Key key = KeyFactory.createKey(Invitation.class.getSimpleName(), Long.parseLong(id));
+		
+		Invitation invitation = mgr.find(Invitation).class, key);
+		
+		
+		try {
+			mgr.remove(invitation);;
+		}	finally {
+			mgr.close();
+		}
+	}
+	
+	private static EntityManager getEntityManager() {
+		return EMF.get().createEntityManager();
+	}
+	
+	private Invitation fromJson(String jsonString) {
+		Gson gson = new Gson();
+		return gson.fromJson(jsonString, Invitation.class);
+	}
+	
+	private String toJson(Object object) {
+		Gson gson = new Gson();
+		return gson.toJson(object);
+	}
+	
+	private String inputStreamToString(InputStream inputStream) {
+		Scanner sc = new Scanner(inputStream);
+		sc.useDelimiter("\\Z+");
+		return sc.next();
+	}
+	
+	private String doubleToString(double token) {
+		String string = token;
+		return string;
+	}
+}

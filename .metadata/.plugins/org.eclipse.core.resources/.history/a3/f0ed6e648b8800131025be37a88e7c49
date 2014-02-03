@@ -1,0 +1,46 @@
+package com.player;
+
+import javax.persistence.Basic;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import com.google.appengine.api.datastore.Key;
+
+@Entity
+public class Song {
+	@Basic(optional = false)
+	String name;
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	Key circleId;
+	
+	@Basic(optional = false)
+	String status;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Key getCircleId() {
+		return circleId;
+	}
+
+	public void setCircleId(Key circleId) {
+		this.circleId = circleId;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+}
