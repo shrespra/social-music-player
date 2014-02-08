@@ -35,7 +35,11 @@ public class Response {
 	private static String toString(InputStream content) {
 		Scanner sc = new Scanner(content);
 		sc.useDelimiter("\\Z+");
+		if (sc.hasNext())
 		return sc.next();
+		
+		else
+			return "";
 	}
 
 }

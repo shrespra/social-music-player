@@ -1,0 +1,26 @@
+package com.jiunes.music.client.http;
+
+import java.io.IOException;
+
+import org.apache.http.client.ClientProtocolException;
+
+import com.google.gson.Gson;
+
+public class UserPost {
+	public static void main(String[] args ) throws ClientProtocolException, IOException {
+		HttpTransportClient httpClient = new HttpTransportClient("localhost",8888);
+		
+		//String body = "{\"name\":\"user1\",\"email\":\"user1@gmail.com\"}";
+		User user = new User("abc","a@gmail.com");
+		String body = toJson(user);
+		System.out.println(body);
+		Response response = httpClient.post("/music_player/user", body );
+		System.out.println(response.getStatusCode());
+		System.out.println(response.getResponse());
+	}
+	
+	private static String toJson(Object object) {
+		Gson gson = new Gson();
+		return gson.toJson(object);
+	}
+}

@@ -31,6 +31,14 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	    <url-pattern>/music_player/MusicCircle</url-pattern>
 	</servlet-mapping>
 	
+	<servlet>
+	    <servlet-name>Invitation</servlet-name>
+	    <servlet-class>com.player.InvitationController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>Invitation</servlet-name>
+	    <url-pattern>/music_player/Invitation</url-pattern>
+	</servlet-mapping>
 	
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>

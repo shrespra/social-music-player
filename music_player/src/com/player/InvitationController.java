@@ -42,7 +42,7 @@ public class InvitationController extends HttpServlet {
 		
 		Invitation invitation = fromJson(request);
 		
-		invitation.setToken(Double.toString(Math.random()));
+		invitation.setToken(Double.toString(Math.random()* (10^17)));
 		
 		EntityManager mgr = getEntityManager();
 		
